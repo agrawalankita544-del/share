@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Share sheet state change prototype</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#9F2089}a:hover{color:#7A1868}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:default}
+button:focus-visible{outline:2px solid #2E6BE6;outline-offset:2px}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.up{animation:up .32s cubic-bezier(.2,.8,.2,1)}
+.fade{animation:fade .2s ease}
+.rise{animation:rise .3s cubic-bezier(.2,.8,.2,1)}
+.shimmer{background:linear-gradient(90deg,#C995BE 0%,#9F2089 40%,#C995BE 80%);background-size:200px 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 1.1s linear infinite}
+.spin{animation:spin .8s linear infinite}
+@media (prefers-reduced-motion: reduce){.up,.fade,.rise,.shimmer,.spin{animation:none}}
+</style>
+</helmet>
+<div style="width: 900px; height: 940px; box-sizing: border-box; padding: 40px; display: flex; gap: 40px; align-items: flex-start; background: #F2EFF4; font-family: Inter, system-ui, sans-serif; color: #24202A">
+
+<!-- ============ PHONE ============ -->
+<div style="flex-shrink: 0; padding: 10px; background: #1C1820; border-radius: 54px">
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FFFFFF; border-radius: 44px; font-family: Mulish, system-ui, sans-serif; color: #353543">
+
+  <!-- product page -->
+  <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+    <div style="height: 64px; display: flex; align-items: center; padding: 20px 8px 0 4px; flex-shrink: 0">
+      <button aria-label="Back" style="width: 44px; height: 44px; border: none; background: none; color: #353543; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+      <div style="flex: 1"></div>
+      <button aria-label="Search" style="width: 40px; height: 44px; border: none; background: none; color: #353543; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></button>
+      <button aria-label="Wishlist" style="width: 40px; height: 44px; border: none; background: none; color: #353543; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+      <button aria-label="Cart, 5 items" style="position: relative; width: 44px; height: 44px; border: none; background: none; color: #353543; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h10.2L20 7H6.2"></path><circle cx="9" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg><span style="position: absolute; top: 6px; right: 6px; min-width: 15px; height: 15px; border-radius: 8px; background: #353543; color: #FFFFFF; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center">5</span></button>
+    </div>
+
+    <div style="height: 40px; flex-shrink: 0; background: #F5F5F8; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid #E8E8EE">
+      <div style="display: flex; align-items: center; border: 1px solid #D5D5DE; border-radius: 6px; overflow: hidden; background: #FFFFFF; height: 26px">
+        <span style="background: #353543; color: #FFFFFF; height: 100%; display: flex; align-items: center; gap: 4px; padding: 0 10px; font-size: 13px; font-weight: 700">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3c3 4 6 6.5 6 11a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-5 1-8z"></path></svg>Affiliate</span>
+        <span style="padding: 0 10px; font-size: 13px; font-weight: 600; color: #353543">{{rate}} Commission</span>
+      </div>
+    </div>
+
+    <div style="height: 330px; flex-shrink: 0; background: #ECECEF; display: flex; align-items: center; justify-content: center">
+      <img src="./assets/eeb8de6994782189850e38a3451ac967.png" alt="Dream Stardust eyeshadow and highlighter palette" style="width: 210px; height: 233px; object-fit: contain; border-radius: 12px">
+    </div>
+
+    <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 15px; font-weight: 600; color: #5C5C6B">Dream Stardust Eyeshadow &amp; Highlighter</div>
+      <div style="font-size: 24px; font-weight: 800">₹232</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 8px">
+        <button onClick="{{outOfScope}}" style="height: 44px; border-radius: 8px; border: 1px solid #DCDCE5; background: #FFFFFF; color: #353543; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>Wishlist</button>
+        <button onClick="{{openShare}}" style="height: 44px; border-radius: 8px; border: 1px solid #DCDCE5; background: #FFFFFF; color: #353543; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.9l7.6-4.4M8.2 13.1l7.6 4.4"></path></svg>Share</button>
+      </div>
+    </div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 24px; background: #FFFFFF; border-top: 1px solid #ECECF2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <button onClick="{{outOfScope}}" style="height: 46px; border-radius: 8px; border: 1px solid #9F2089; background: #FFFFFF; color: #9F2089; font-size: 15px; font-weight: 700">Add to Cart</button>
+      <button onClick="{{outOfScope}}" style="height: 46px; border-radius: 8px; border: none; background: #9F2089; color: #FFFFFF; font-size: 15px; font-weight: 700">Buy Now</button>
+    </div>
+  </div>
+
+  <!-- ============ SHARE SHEET ============ -->
+  <sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ true }}">
+    <div class="fade" style="position: absolute; inset: 0; background: rgba(40,36,48,0.5)">
+      <button onClick="{{closeSheet}}" aria-label="Close share sheet" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: transparent"></button>
+    </div>
+    <div class="up" style="position: absolute; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 22px 22px 0 0; padding: 10px 20px 30px; box-sizing: border-box; display: flex; flex-direction: column">
+      <div style="width: 40px; height: 4px; border-radius: 2px; background: #D6D6DF; align-self: center"></div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px">
+        <div style="font-size: 16px; font-weight: 700; letter-spacing: 0.02em; color: #353543">SHARE THIS PRODUCT</div>
+        <button onClick="{{closeSheet}}" aria-label="Close" style="width: 44px; height: 44px; margin-right: -12px; border: none; background: none; color: #353543; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+
+      <!-- one persistent card; only its contents change -->
+      <div style="position: relative; margin-top: 8px">
+        <sc-if value="{{showConfetti}}" hint-placeholder-val="{{ false }}">
+          <div aria-hidden="true" style="position: absolute; left: 50%; top: 45%; width: 0; height: 0; pointer-events: none; z-index: 3">
+            <sc-for list="{{confetti}}" as="c" hint-placeholder-count="0">
+              <span style="{{c.style}}"></span>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="{{cardStyle}}">
+          <div style="display: flex; gap: 14px; align-items: center">
+            <div style="width: 74px; height: 80px; background: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><img src="./assets/eeb8de6994782189850e38a3451ac967.png" alt="" style="width: 54px; height: 62px; object-fit: contain"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1">
+              <div style="font-size: 14px; color: #6E6E7E; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Dream Stardust Eyeshadow…</div>
+              <div style="font-size: 20px; font-weight: 700; color: #353543">₹232</div>
+              <div style="{{chipWrapStyle}}">
+                <span style="display: inline-flex; align-items: center; gap: 4px; background: #FCE8F7; color: #9F2089; font-size: 13px; font-weight: 700; padding: 3px 8px; border-radius: 4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3c3 4 6 6.5 6 11a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-5 1-8z"></path></svg>You earn {{rate}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="{{linkLabelStyle}}">{{linkLabel}}</div>
+            <div style="{{linkBoxStyle}}">
+              <div style="position: relative; flex: 1; height: 20px; overflow: hidden; min-width: 0">
+                <span style="{{prodUrlStyle}}">{{productUrl}}</span>
+                <span style="{{commUrlStyle}}">{{commissionUrl}}</span>
+                <span style="{{loadingStyle}}"><span class="shimmer">Creating your commission link…</span></span>
+              </div>
+              <button onClick="{{copyLink}}" disabled="{{isLoading}}" style="{{copyBtnStyle}}">
+                <sc-if value="{{copied}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+                {{copyLabel}}
+              </button>
+            </div>
+            <div style="{{earnNoteStyle}}">Earn on eligible orders placed through this link. The buyer pays the same price.</div>
+          </div>
+        </div>
+      </div>
+
+      <button onClick="{{shareLink}}" disabled="{{isLoading}}" style="{{ctaStyle}}">
+        <sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+          <svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 1-9 9"></path></svg>
+        </sc-if>
+        <sc-if value="{{notLoading}}" hint-placeholder-val="{{ true }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.9l7.6-4.4M8.2 13.1l7.6 4.4"></path></svg>
+        </sc-if>
+        {{ctaLabel}}
+      </button>
+
+      <div style="display: flex; align-items: center; gap: 14px; margin: 20px 0 6px">
+        <span style="flex: 1; height: 1px; background: #E2E2EA"></span><span style="font-size: 12px; letter-spacing: 0.15em; color: #6E6E7E">OR</span><span style="flex: 1; height: 1px; background: #E2E2EA"></span>
+      </div>
+
+      <!-- secondary slot: same position in both states -->
+      <div style="min-height: 92px; display: flex; flex-direction: column">
+        <sc-if value="{{showGetRow}}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{getCommission}}" disabled="{{isLoading}}" class="rise" style="{{getRowStyle}}">
+            <span style="width: 100%; display: flex; align-items: center; justify-content: space-between">
+              <span style="font-size: 17px; font-weight: 800">Get commission link</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A4A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+            </span>
+            <span style="font-size: 14px; line-height: 1.7; color: #5C5C6B">Earn <span style="display: inline-flex; align-items: center; gap: 3px; background: #FCE8F7; color: #9F2089; font-size: 13px; font-weight: 700; padding: 1px 6px; border-radius: 4px; vertical-align: middle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3c3 4 6 6.5 6 11a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-5 1-8z"></path></svg>{{rate}} commission</span> on eligible orders placed through your link.</span>
+          </button>
+        </sc-if>
+        <sc-if value="{{showSwitchBack}}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{goBack}}" class="rise" style="border: none; background: none; padding: 10px 4px; text-align: left; color: #353543; display: flex; align-items: center; gap: 14px">
+            <span style="width: 40px; height: 40px; border-radius: 20px; background: #F1F1F6; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#353543" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></span>
+            <span style="display: flex; flex-direction: column; gap: 3px">
+              <span style="font-size: 16px; font-weight: 800">Share product link instead</span>
+              <span style="font-size: 13px; line-height: 1.45; color: #5C5C6B">For opinions and recommendations. Doesn’t earn commission.</span>
+            </span>
+          </button>
+        </sc-if>
+      </div>
+
+      <div role="status" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{srStatus}}</div>
+    </div>
+  </sc-if>
+
+  <!-- ============ PHONE SHARE SHEET (simulated) ============ -->
+  <sc-if value="{{showOs}}" hint-placeholder-val="{{ false }}">
+    <div class="fade" style="position: absolute; inset: 0; background: rgba(10,8,12,0.55)">
+      <button onClick="{{closeOs}}" aria-label="Cancel sharing" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: transparent"></button>
+    </div>
+    <div class="up" style="position: absolute; left: 8px; right: 8px; bottom: 8px; background: #F4F3F7; border-radius: 26px; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 14px; font-family: Inter, system-ui, sans-serif">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="font-size: 15px; font-weight: 600; color: #24202A">Share via</div>
+        <button onClick="{{closeOs}}" aria-label="Cancel sharing" style="width: 44px; height: 44px; margin-right: -10px; border: none; background: none; color: #24202A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 14px; padding: 12px; display: flex; gap: 12px; align-items: center">
+        <img src="./assets/eeb8de6994782189850e38a3451ac967.png" alt="" style="width: 44px; height: 48px; object-fit: contain; flex-shrink: 0">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="{{osBadgeStyle}}">{{osLabel}}</span>
+          <div style="font-size: 12px; color: #5E5765; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{osUrl}}</div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+        <sc-for list="{{targets}}" as="t" hint-placeholder-count="5">
+          <button onClick="{{t.send}}" aria-label="{{t.aria}}" style="border: none; background: none; padding: 4px 0; display: flex; flex-direction: column; align-items: center; gap: 6px; color: #24202A">
+            <span style="{{t.avatarStyle}}">{{t.initial}}</span>
+            <span style="font-size: 11px; line-height: 1.25; text-align: center">{{t.name}}</span>
+            <span style="font-size: 10px; line-height: 1.2; color: #5E5765; text-align: center">{{t.sub}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div class="rise" role="status" style="position: absolute; left: 24px; right: 24px; bottom: 104px; background: #24202A; color: #FFFFFF; border-radius: 10px; padding: 12px 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; z-index: 10">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+      {{toast}}
+    </div>
+  </sc-if>
+</div>
+</div>
+
+<!-- ============ REVIEW PANEL ============ -->
+<div style="width: 330px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; background: #FFFFFF; border-radius: 16px; padding: 20px; box-sizing: border-box; border: 1px solid #E4DEE9">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <div style="font-size: 12px; font-weight: 600; color: #6B6472">Review menu</div>
+    <div style="font-size: 18px; font-weight: 700; line-height: 1.3">Same sheet changes to the commission link</div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 13px; font-weight: 600; color: #4A4450">Task</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+      <button onClick="{{setEveryday}}" style="{{everydayBtn}}">Everyday share</button>
+      <button onClick="{{setCreator}}" style="{{creatorBtn}}">Creator share</button>
+    </div>
+    <div style="font-size: 13px; line-height: 1.45; color: #3E3845; background: #F7F5F9; border-radius: 10px; padding: 10px 12px">{{taskText}}</div>
+  </div>
+  <button onClick="{{reset}}" style="height: 44px; border-radius: 10px; border: 1px solid #CFC7D6; background: #FFFFFF; color: #24202A; font-size: 14px; font-weight: 600">Reset journey</button>
+  <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #EEE9F1; padding-top: 14px">
+    <div style="font-size: 15px; font-weight: 700">What got copied or sent</div>
+    <div style="font-size: 12px; color: #5E5765">Intended link: {{expectedLabel}}</div>
+  </div>
+  <sc-if value="{{logEmpty}}" hint-placeholder-val="{{ true }}">
+    <div style="font-size: 13px; line-height: 1.45; color: #5E5765">Nothing yet. Tap Share on the product page to start.</div>
+  </sc-if>
+  <sc-for list="{{logItems}}" as="l" hint-placeholder-count="2">
+    <div style="border: 1px solid #ECE6F0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 13px; line-height: 1.4; color: #24202A">{{l.text}}</div>
+      <span style="{{l.chipStyle}}">{{l.verdict}}</span>
+    </div>
+  </sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"rate":{"editor":"enum","options":["9.6%","10%"],"default":"9.6%"},"$preview":{"width":900,"height":940}}'>
+var SS_TARGETS = [
+  { name: 'Priya', sub: 'Sister', app: 'WhatsApp', initial: 'P', bg: '#1F7A4D' },
+  { name: 'riya.styles', sub: 'Follower', app: 'Instagram', initial: 'R', bg: '#A12F6E' },
+  { name: 'WhatsApp', sub: 'Chats', app: 'WhatsApp', initial: 'W', bg: '#2F6B4F' },
+  { name: 'Instagram', sub: 'Direct', app: 'Instagram', initial: 'I', bg: '#8A3B8F' },
+  { name: 'Messages', sub: 'SMS', app: 'Messages', initial: 'M', bg: '#2E5FB8' }
+];
+var SS_COLORS = ['#F4A6C8', '#9BC7F0', '#F7D774', '#A6E3C4', '#C9A7F0', '#F7B98B', '#9F2089', '#7FD3E0'];
+var SS_PIECES = (function () {
+  var out = [];
+  for (var i = 0; i < 28; i++) {
+    var ang = (i / 28) * Math.PI * 2 + (i % 3) * 0.2;
+    var dist = 110 + (i * 37 % 60);
+    out.push({
+      dx: Math.round(Math.cos(ang) * dist * 1.3),
+      dy: Math.round(Math.sin(ang) * dist * 0.8) - 20,
+      r: (i * 67) % 360,
+      w: 5 + (i % 3) * 2,
+      h: 9 + (i % 4) * 3,
+      c: SS_COLORS[i % SS_COLORS.length],
+      d: (i % 6) * 0.025
+    });
+  }
+  return out;
+})();
+var SS_DEFAULTS = { sheet: false, mode: 'product', copied: false, burst: 'off', os: null, toast: null, toastId: 0, task: 'everyday', log: [] };
+
+class Component extends DCLogic {
+  st() { return Object.assign({}, SS_DEFAULTS, this.state || {}); }
+  reduced() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+  toastPatch(msg) {
+    var id = (this.st().toastId || 0) + 1, self = this;
+    setTimeout(function () { if (self.st().toastId === id) self.setState({ toast: null }); }, 2000);
+    return { toast: msg, toastId: id };
+  }
+  logEntry(kind, text) {
+    var s = this.st();
+    var expected = s.task === 'everyday' ? 'product' : 'commission';
+    var ok = kind === expected;
+    var verdict = ok ? 'Matches task' : (s.task === 'everyday' ? 'Commission link on an everyday share' : 'Product link: this order won\u2019t earn');
+    return [{ text: text, verdict: verdict, ok: ok }].concat(s.log).slice(0, 6);
+  }
+  cancelFlow() { this._gen = (this._gen || 0) + 1; this._copyGen = (this._copyGen || 0) + 1; }
+  startCommission() {
+    var self = this;
+    this.cancelFlow();
+    var gen = this._gen;
+    var alive = function () { return self._gen === gen; };
+    this.setState({ mode: 'loading', copied: false, burst: 'off' });
+    setTimeout(function () {
+      if (!alive()) return;
+      var fx = !self.reduced();
+      self.setState({ mode: 'commission', burst: fx ? 'start' : 'off' });
+      if (!fx) return;
+      setTimeout(function () { if (alive()) self.setState({ burst: 'fly' }); }, 40);
+      setTimeout(function () { if (alive()) self.setState({ burst: 'fade' }); }, 1000);
+      setTimeout(function () { if (alive()) self.setState({ burst: 'off' }); }, 1700);
+    }, 750);
+  }
+  confettiFor(phase) {
+    return SS_PIECES.map(function (p) {
+      var base = 'position: absolute; left: 0; top: 0; width: ' + p.w + 'px; height: ' + p.h + 'px; margin: ' + (-p.h / 2) + 'px 0 0 ' + (-p.w / 2) + 'px; border-radius: 2px; background: ' + p.c + '; ';
+      if (phase === 'start') return base + 'transform: translate(0px, 0px) rotate(0deg) scale(0.3); opacity: 1; transition: none';
+      if (phase === 'fly') return base + 'transform: translate(' + p.dx + 'px, ' + p.dy + 'px) rotate(' + p.r + 'deg) scale(1); opacity: 1; transition: transform 0.85s cubic-bezier(.12,.75,.3,1) ' + p.d + 's';
+      return base + 'transform: translate(' + p.dx + 'px, ' + (p.dy + 40) + 'px) rotate(' + (p.r + 90) + 'deg) scale(0.9); opacity: 0; transition: transform 0.7s ease-in, opacity 0.7s ease-in';
+    });
+  }
+  renderVals() {
+    var s = this.st(), self = this;
+    var rate = this.props.rate ?? '9.6%';
+    var productUrl = 'www.meesho.com/p/dream-stardust-5k21x';
+    var commissionUrl = 'www.meesho.com/c/pe32e23e';
+    var isComm = s.mode === 'commission';
+    var isLoading = s.mode === 'loading';
+    var isProd = s.mode === 'product';
+    var kindLabel = function (k) { return k === 'commission' ? 'commission link' : 'product link'; };
+    var seg = function (on) { return 'height: 40px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid ' + (on ? '#2B1A33' : '#E3DEE8') + '; background: ' + (on ? '#2B1A33' : '#FFFFFF') + '; color: ' + (on ? '#FFFFFF' : '#2A2530'); };
+    var urlBase = 'position: absolute; left: 0; right: 0; top: 0; line-height: 20px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.3s ease, transform 0.35s cubic-bezier(.2,.8,.2,1); ';
+    var osComm = s.os === 'commission';
+    var tint = isComm || isLoading;
+
+    return {
+      rate: rate,
+      productUrl: productUrl,
+      commissionUrl: commissionUrl,
+      sheetOpen: s.sheet,
+      isLoading: isLoading,
+      notLoading: !isLoading,
+
+      cardStyle: 'position: relative; border-radius: 18px; padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 12px; transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; border: 1.5px solid ' + (isComm ? '#E2AED7' : 'transparent') + '; background: ' + (isComm ? '#FCF4FA' : '#F6F6FB') + '; box-shadow: ' + (isComm ? '0 6px 20px rgba(159,32,137,0.12)' : 'none'),
+      chipWrapStyle: 'overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease 0.1s, transform 0.35s cubic-bezier(.2,.8,.2,1) 0.1s; max-height: ' + (isComm ? '30px' : '0px') + '; opacity: ' + (isComm ? 1 : 0) + '; transform: translateY(' + (isComm ? 0 : 6) + 'px)',
+      linkLabel: isProd ? 'Product link' : 'Your commission link',
+      linkLabelStyle: 'font-size: 12px; font-weight: 700; transition: color 0.3s ease; color: ' + (isProd ? '#6E6E7E' : '#9F2089'),
+      linkBoxStyle: 'display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-radius: 8px; transition: border-color 0.3s ease, background-color 0.3s ease; border: 1.5px dashed ' + (tint ? '#C76BB5' : '#A3A3B3') + '; background: ' + (tint ? '#FFFFFF' : 'transparent'),
+      prodUrlStyle: urlBase + 'color: #4A4A5A; text-decoration: underline; opacity: ' + (isProd ? 1 : 0) + '; transform: translateY(' + (isProd ? 0 : -14) + 'px)',
+      commUrlStyle: urlBase + 'color: #7A1868; text-decoration: underline; font-weight: 600; opacity: ' + (isComm ? 1 : 0) + '; transform: translateY(' + (isComm ? 0 : 14) + 'px)',
+      loadingStyle: urlBase + 'opacity: ' + (isLoading ? 1 : 0) + '; transform: translateY(' + (isLoading ? 0 : (isProd ? 14 : -14)) + 'px)',
+      earnNoteStyle: 'font-size: 12px; line-height: 1.45; color: #6A3A63; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease 0.15s; max-height: ' + (isComm ? '40px' : '0px') + '; opacity: ' + (isComm ? 1 : 0),
+      copied: s.copied,
+      copyLabel: s.copied ? 'COPIED' : 'COPY',
+      copyBtnStyle: 'height: 36px; min-width: 76px; padding: 0 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease; ' + (s.copied ? 'background: #9F2089; color: #FFFFFF' : 'background: #FCE8F7; color: #9F2089') + '; opacity: ' + (isLoading ? 0.4 : 1),
+
+      ctaLabel: isLoading ? 'CREATING LINK…' : (isComm ? 'SHARE COMMISSION LINK' : 'SHARE LINK'),
+      ctaStyle: 'margin-top: 16px; height: 52px; border-radius: 4px; border: none; color: #FFFFFF; font-size: 15px; font-weight: 800; letter-spacing: 0.03em; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background-color 0.3s ease, opacity 0.2s ease; background: #9A2A87; opacity: ' + (isLoading ? 0.7 : 1),
+
+      showGetRow: !isComm,
+      showSwitchBack: isComm,
+      getRowStyle: 'width: 100%; border: none; background: none; padding: 10px 4px; text-align: left; color: #353543; display: flex; flex-direction: column; gap: 6px; transition: opacity 0.2s ease; opacity: ' + (isLoading ? 0.45 : 1),
+      srStatus: isLoading ? 'Creating your commission link' : (isComm ? 'Commission link ready' : ''),
+
+      showConfetti: s.burst !== 'off',
+      confetti: s.burst === 'off' ? [] : this.confettiFor(s.burst),
+
+      openShare: function () { self.cancelFlow(); self.setState({ sheet: true, mode: 'product', copied: false, burst: 'off' }); },
+      closeSheet: function () { self.cancelFlow(); self.setState({ sheet: false, mode: 'product', copied: false, burst: 'off' }); },
+      getCommission: function () { if (self.st().mode === 'product') self.startCommission(); },
+      goBack: function () { self.cancelFlow(); self.setState({ mode: 'product', copied: false, burst: 'off' }); },
+      copyLink: function () {
+        var k = self.st().mode;
+        if (k === 'loading') return;
+        self._copyGen = (self._copyGen || 0) + 1;
+        var cg = self._copyGen;
+        setTimeout(function () { if (self._copyGen === cg) self.setState({ copied: false }); }, 2200);
+        self.setState(Object.assign({ copied: true, log: self.logEntry(k, 'Copied ' + kindLabel(k)) }, self.toastPatch((k === 'commission' ? 'Commission link' : 'Product link') + ' copied')));
+      },
+      shareLink: function () { var m = self.st().mode; if (m !== 'loading') self.setState({ os: m }); },
+      outOfScope: function () { self.setState(self.toastPatch('Not part of this prototype')); },
+
+      showOs: !!s.os,
+      osLabel: osComm ? 'Commission link' : 'Product link',
+      osUrl: osComm ? commissionUrl : productUrl,
+      osBadgeStyle: 'align-self: flex-start; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px; ' + (osComm ? 'background: #7A1868; color: #FFFFFF' : 'background: #E3E3EB; color: #24202A'),
+      closeOs: function () { self.setState({ os: null }); },
+      targets: SS_TARGETS.map(function (t) {
+        return Object.assign({}, t, {
+          aria: 'Send to ' + t.name + ' on ' + t.app,
+          avatarStyle: 'width: 48px; height: 48px; border-radius: 24px; background: ' + t.bg + '; color: #FFFFFF; font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center',
+          send: function () {
+            var k = self.st().os;
+            var where = t.name === t.app ? t.app : t.name + ' on ' + t.app;
+            self.cancelFlow();
+            self.setState(Object.assign({ os: null, sheet: false, mode: 'product', copied: false, burst: 'off', log: self.logEntry(k, 'Sent ' + kindLabel(k) + ' to ' + where) }, self.toastPatch('Sent to ' + where)));
+          }
+        });
+      }),
+
+      hasToast: !!s.toast,
+      toast: s.toast,
+
+      everydayBtn: seg(s.task === 'everyday'),
+      creatorBtn: seg(s.task === 'creator'),
+      setEveryday: function () { self.setState({ task: 'everyday' }); },
+      setCreator: function () { self.setState({ task: 'creator' }); },
+      taskText: s.task === 'everyday'
+        ? 'You\u2019re thinking of buying this and want your sister\u2019s second opinion.'
+        : 'A follower asked for the link after your Reel. Send it and earn if they buy through it.',
+      expectedLabel: s.task === 'everyday' ? 'Product link' : 'Commission link',
+      reset: function () { self.cancelFlow(); self.setState({ sheet: false, mode: 'product', copied: false, burst: 'off', os: null, toast: null, log: [] }); },
+      logEmpty: s.log.length === 0,
+      logItems: s.log.map(function (l) {
+        return { text: l.text, verdict: l.verdict, chipStyle: 'align-self: flex-start; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px; ' + (l.ok ? 'background: #E3F4EA; color: #0B5E33' : 'background: #FDEBDD; color: #8A3208') };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
